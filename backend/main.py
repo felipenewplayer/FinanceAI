@@ -4,4 +4,8 @@ app = FastAPI()
 
 @app.get('/')
 def get_hello():
-    return {"Hello my best friend"}
+    return {"API está rodando ;)"}
+
+@app.get("/signup")
+def signup():
+    return {"Tela onde ira ser feito o sign up"}
