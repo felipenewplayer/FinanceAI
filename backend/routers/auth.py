@@ -6,7 +6,7 @@ from fastapi import HTTPException
 from schema.user import UserCreate,UserResponse
 from models.models import User
 from core.database import get_db
-from core.security import gerar_hash, verificar_senha
+from core.security import gerar_hash, verificar_senha, criar_access_token
 
 router = APIRouter(
     prefix="/auth",
@@ -48,20 +48,25 @@ def login(
             status_code=401,
             detail="Email ou senha inválidos"
         )
-        
     if not verificar_senha(user.senha, usuario.senha_hash):
         raise HTTPException(
             status_code=401,
-            detail = "Email ou senha inválidas!")
+            detail="Email ou senha inválidos"
+        )
         
+    token = criar_access_token(
+        data={
+            "sub":usuario.email
+        }
+    )
     return {
-        "id": usuario.id,
-        "email": usuario.email
+        "access_token":token,
+        "token_type":"bearer"
     }
     
     
 @router.get("/users",response_model=list[UserResponse])
-def retornar_usuario(
+def listar_usuarios(
     db: Session = Depends(get_db)
 ):
     stmt = select(User)
@@ -70,7 +75,7 @@ def retornar_usuario(
     return usuario  
 
 @router.get("/user/{id}",response_model=UserResponse)
-def retornar_usuario(
+def buscar_usuario(
     id:int,
     db: Session = Depends(get_db)
 ):
