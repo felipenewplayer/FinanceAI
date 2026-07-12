@@ -1,5 +1,7 @@
 from pydantic import BaseModel, EmailStr
 
+#Aqui define o que entra e o que sai da api 
+
 class UserCreate(BaseModel):
     email:EmailStr
     senha:str
@@ -11,4 +13,7 @@ class UserResponse(BaseModel):
     class Config:
         from_attributes = True
 
-#Aqui define o que entra e o que sai da api 
+class UserLogin(BaseModel):
+    email: EmailStr
+    senha: str
+    
