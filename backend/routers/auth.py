@@ -6,7 +6,7 @@ from schema.user import UserCreate,UserResponse, UserLogin
 from models.models import User
 from core.database import get_db
 from core.security import gerar_hash, verificar_senha, criar_access_token
-
+from sqlalchemy.exc import IntegrityError
 router = APIRouter(
     prefix="/auth",
     tags=["Auth"]
@@ -23,11 +23,19 @@ def register(
         email=user.email,
         senha_hash=gerar_hash(user.senha)
     )
-
-    db.add(novo_usuario)
-    db.commit()
-    db.refresh(novo_usuario)
-
+    try:
+        
+        db.add(novo_usuario)
+        db.commit()
+        db.refresh(novo_usuario)
+        
+    except IntegrityError:
+        db.rollback()
+        
+        raise HTTPException(
+            status_code=400,
+            detail="Email já cadastrado"
+        )
     return {
         "id": novo_usuario.id,
         "email": novo_usuario.email
