@@ -1,12 +1,8 @@
-from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
 from sqlalchemy import String
 from datetime import datetime, timezone
-
-
-class Base(DeclarativeBase):
-    pass
+from core.database import Base
 
 class User(Base):
     __tablename__ = "users"
