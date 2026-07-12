@@ -1,6 +1,5 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from schema.login import UserLogin
 from sqlalchemy import select
 from fastapi import HTTPException
 from schema.user import UserCreate,UserResponse
