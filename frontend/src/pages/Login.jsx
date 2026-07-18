@@ -1,52 +1,57 @@
 import { useState } from "react";
 import {useNavigate} from "react-router-dom"
+import { loginUser } from "../services/authService";
 
 function Login() {
     const navigate = useNavigate();
     const [email, setEmail] = useState("");
     const [senha, setSenha] = useState("");
+    const [error, setError] = useState("");
 
     async function handleLogin(event) {
         event.preventDefault();
 
-        try {
-            const response = await fetch("http://localhost:8000/auth/login", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    email,
-                    senha,
-                }),
-            });
+        if (!email || !senha) {
+            setError("Por favor, preencha todos os campos.");
+            return;
+        }
 
-            if (!response.ok) {
-                throw new Error("Email ou senha inválidos.");
+        try {
+            const data = {
+                email,
+                senha,
             }
 
-            const data = await response.json();
-            localStorage.setItem("token", data.access_token);
+            const response = await loginUser(data)
+            localStorage.setItem("token", response.access_token);
             navigate("/dashboard");
-
         } catch (error) {
+            if(error.response){
+                setError(error.response.data.detail)
+            }else{
+                setError("Erro ao conectar com o servidor")
+            }
             console.error(error);
         }
     }
 
     return (
         <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12">
-            <div className="w-full max-w-md rounded-xl bg-white p-8 shadow-md">
+            <div className="w-full max-w-md space-y-8 rounded-xl bg-white p-8 shadow-md">
 
-                <h2 className="mb-8 text-center text-3xl font-bold">
-                    Fazer Login
-                </h2>
+                <div>
+                    <h2 className="roboto-black mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
+                        Fazer Login
+                    </h2>
+                </div>
 
                 <form onSubmit={handleLogin} className="space-y-6">
 
                     <div>
-                        <label htmlFor="email">
-                            Email
+                        <label 
+                        htmlFor="email"
+                        className="roboto-medium">
+                            Email : 
                         </label>
 
                         <input
@@ -54,13 +59,17 @@ function Login() {
                             type="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            className="mt-1 w-full rounded border p-2"
+                            placeholder="Digite seu email"
+                            className="roboto-medium mt-1 w-full rounded border p-2"
+                            required
                         />
                     </div>
 
                     <div>
-                        <label htmlFor="senha">
-                            Senha
+                        <label 
+                        htmlFor="senha"
+                        className="roboto-medium">
+                            Senha : 
                         </label>
 
                         <input
@@ -68,18 +77,26 @@ function Login() {
                             type="password"
                             value={senha}
                             onChange={(e) => setSenha(e.target.value)}
-                            className="mt-1 w-full rounded border p-2"
+                            className="mt-1 w-full rounded border p-2"      
+                            placeholder="Digite sua senha"
+                            required
                         />
                     </div>
 
                     <button
                         type="submit"
-                        className="w-full rounded bg-indigo-600 py-2 text-white hover:bg-indigo-500"
+                        className="roboto-medium w-full rounded bg-indigo-600 py-2 text-white hover:bg-indigo-500 cursor-pointer"
                     >
                         Fazer Login
                     </button>
 
                 </form>
+
+                <div>
+                    <p className="roboto-regular text-center mt-6">Não tem uma conta? <button 
+                    onClick={() => navigate("/register")}
+                    className="roboto-medium text-indigo-600 hover:text-indigo-500">Crie uma agora.</button></p>
+                </div>
             </div>
         </div>
     );
