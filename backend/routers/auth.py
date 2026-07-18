@@ -1,3 +1,4 @@
+from backend.schema.acao import AcaoResponse
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from sqlalchemy import select
@@ -9,6 +10,7 @@ from core.security import gerar_hash, verificar_senha, criar_access_token
 from sqlalchemy.exc import IntegrityError
 from log.log import get_logger
 
+from services.brapi_service import buscar_acao_brapi
 
 logger = get_logger(__name__)
 
@@ -100,3 +102,28 @@ def buscar_usuario(
             detail="Usuário não encontrado"
         )
     return usuario  
+
+
+
+@router.get("/acoes/{ticker}", response_model=AcaoResponse)
+async def buscar_acao(ticker:str):
+    ticker = ticker.upper()
+
+    try:
+        acao = await buscar_acao_brapi(ticker)
+
+        return acao
+    
+    except HTTPException:
+        raise HTTPException(
+            status_code=404,
+            detail="Ação não encontrada"
+        )
+    
+    except Exception:
+        logger.exception(f"Erro ao buscar ação {ticker}")
+        raise HTTPException(
+            status_code=500,
+            detail="Erro interno do servidor "
+        )
+
