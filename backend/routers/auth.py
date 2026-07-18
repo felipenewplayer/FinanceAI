@@ -7,8 +7,7 @@ from models.models import User
 from core.database import get_db
 from core.security import gerar_hash, verificar_senha, criar_access_token
 from sqlalchemy.exc import IntegrityError
-from log.log import get_logger
-
+from core.logger import get_logger
 
 logger = get_logger(__name__)
 
@@ -100,3 +99,5 @@ def buscar_usuario(
             detail="Usuário não encontrado"
         )
     return usuario  
+
+
