@@ -15,7 +15,9 @@ function Dashboard(){
     return(
         <div className="h-screen">
             {/*Header*/} 
-            <header className="bg-gray-200 p-3">
+            <header className="bg-gray-200 p-3 flex justify-between items-center">
+                <div className="flex justify-start"><h1 className="roboto-black text-2xl">FinanceAI</h1>
+                </div>
                 <nav>
                     <ul className="flex justify-end gap-10 px-8 items-center">
                         <li className="roboto-regular text-lg">
