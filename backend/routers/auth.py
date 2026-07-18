@@ -7,6 +7,11 @@ from models.models import User
 from core.database import get_db
 from core.security import gerar_hash, verificar_senha, criar_access_token
 from sqlalchemy.exc import IntegrityError
+from log.log import get_logger
+
+
+logger = get_logger(__name__)
+
 router = APIRouter(
     prefix="/auth",
     tags=["Auth"]
@@ -31,7 +36,7 @@ def register(
         
     except IntegrityError:
         db.rollback()
-        
+        logger.info(f"Email já cadastrado {user.email}")
         raise HTTPException(
             status_code=400,
             detail="Email já cadastrado"
@@ -49,8 +54,9 @@ def login(
     stmt = select(User).where(User.email == user.email)
 
     usuario = db.execute(stmt).scalar_one_or_none()
-
+    
     if usuario is None:
+        logger.info(f"Email ou senha inválidos {user.email}")
         raise HTTPException(
             status_code=401,
             detail="Email ou senha inválidos"

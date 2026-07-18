@@ -16,3 +16,6 @@ logging.basicConfig(
         logging.StreamHandler() # Também manda para o console
     ]
 )
+
+def get_logger(name: str):
+    return logging.getLogger(name)

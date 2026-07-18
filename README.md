@@ -3,7 +3,7 @@
 Dashboard de ações brasileiro com IA integrada. Acompanhe suas ações favoritas em tempo real e faça perguntas em linguagem natural sobre o mercado financeiro.
 
 🔗 **App ao vivo:** (em breve)
-📂 **Código-fonte:** (em breve)
+📂 **Código-fonte:** ([https://github.com/felipenewplayer/FinanceAI](https://github.com/felipenewplayer/FinanceAI))
 
 ---
 
